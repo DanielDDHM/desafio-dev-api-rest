@@ -1,0 +1,27 @@
+{
+  "name": "account-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "sls offline start --stage local --noAuth --httpPort 4001 --lambdaPort 4003",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "keywords": [],
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "prisma": "^6.3.0",
+    "serverless": "^4.5.0",
+    "serverless-offline": "^14.4.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-mock-extended": "^4.0.0-beta1"
+  }
+}

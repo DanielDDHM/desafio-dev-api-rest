@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      =  "postgresql://admin:admin@localhost:5432/app-dock?sslmode=disable" //env("DATABASE_URL")
+}
+
+model holders {
+  id        Int      @id @default(autoincrement())
+  fullName  String
+  cpf       String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  account account?
+
+  @@unique([cpf], map: "unique_holder_cpf")
+}
+
+model account {
+  id        Int      @id @default(autoincrement())
+  holderId  Int      @unique
+  holder    holders  @relation(fields: [holderId], references: [id], onDelete: Cascade)
+  number    Int      @unique @default(autoincrement())
+  agency    String
+  balance   Decimal  @default(0.00)
+  isActive  Boolean  @default(true)
+  isBlocked Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("accounts")
+}
+
+model api_key {
+  id        String   @id @default(uuid())
+  holderId  Int?
+  scopes    String[]
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("api_keys")
+}

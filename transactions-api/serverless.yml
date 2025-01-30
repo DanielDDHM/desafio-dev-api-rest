@@ -1,0 +1,99 @@
+service: transactions-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: sa-east-1
+  environment:
+    DYNAMODB_ENDPOINT: http://localhost:8000
+    SQS_ENDPOINT: http://localhost:4566
+    SQS_QUEUE_URL: http://localhost:4566/000000000000/transactions-queue
+
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+  - serverless-offline-sqs
+
+custom:
+  dynamodb:
+    stages:
+      - offline
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+  serverless-offline-sqs:
+    autoCreate: false
+    endpoint: http://localhost:4566
+  serverless-offline:
+    noAuth: true
+    useChildProcesses: true
+
+resources:
+  Resources:
+    TransactionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: transactions
+        AttributeDefinitions:
+          - AttributeName: transactionId
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
+          - AttributeName: accountNumber
+            AttributeType: S
+        KeySchema:
+          - AttributeName: transactionId
+            KeyType: HASH
+          - AttributeName: createdAt
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        GlobalSecondaryIndexes:
+          - IndexName: AccountCreatedAtIndex
+            KeySchema:
+              - AttributeName: accountNumber
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+    TransactionsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: transactions-queue
+
+functions:
+  deposit:
+    handler: src/handlers/deposit.handler
+    events:
+      - http:
+          path: v1/transactions/deposit
+          method: post
+
+  withdraw:
+    handler: src/handlers/withdraw.handler
+    events:
+      - http:
+          path: v1/transactions/withdraw
+          method: post
+
+  getStatement:
+    handler: src/handlers/getStatement.handler
+    events:
+      - http:
+          path: v1/transactions/statement
+          method: get
+          request:
+            parameters:
+              querystrings:
+                startDate: true
+                endDate: true
+  processTransactions:
+    handler: src/handlers/processTransaction.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - TransactionsQueue
+              - Arn
+          batchSize: 5

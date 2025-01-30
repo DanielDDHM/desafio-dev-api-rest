@@ -1,0 +1,19 @@
+{
+  "name": "account-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "sls offline start --stage local --noAuth --httpPort 4001 --lambdaPort 4003",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "keywords": [],
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "^6.3.0",
+    "prisma": "^6.3.0",
+    "serverless": "^4.5.0"
+  }
+}

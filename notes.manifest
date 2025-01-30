@@ -1,0 +1,29 @@
+0. Dado o enunciado, estou utilizando o js vanilla, pois não enfatiza a possibilidade de utilizar uma linguagem fortemente tipada como o ts.
+
+1. Dados os requisitos, qual schema utilizar?
+Para esse tipo de schema e requisitos, a escolha do banco de dados depende de fatores como escalabilidade, integridade dos dados e facilidade de manutenção.
+Banco Relacional (SQL) - Melhor para Consistência e Integridade
+Banco NoSQL (MongoDB ou DynamoDB) - Melhor para Escalabilidade
+No caso como estou priorizando integridade dos dados, garantia de unicidade do CPF e controle transacional rigoroso.
+Um banco de dados relacional (SQL) é a melhor escolha para contas e um Não relacional seria o ideal para as transações.
+
+2. Alguns parametros podem ser passados dentro do environment da lambda.
+Vejo que varios parametros podem ser passados no environment da lambda, mas não passei por ser algo mais de teste.
+
+3. como foi especificado que o portador so usa cpf e nome, para questões de segurança e auth pensei em outras maneiras dado que o jwt nao seria possivel, pois precisaria de um fluxo padrao de login
+3.1. Autenticação sem Senha (Passwordless)
+3.2. Autenticação Baseada em Chaves de API
+3.3. Autenticação Baseada em Assinatura (HMAC)
+3.4. Uso de Certificados Digitais
+3.5. Alternativa: Autenticação com OTP (One-Time Password)
+acabei optando por seguir com a mais simples pro contexto (Autenticação Baseada em Chaves de API)
+
+4. Muitas coisas podem ser acrescentadas no env ou melhor serem utilizados o SSM (storage management) da amazon, dado que e um contexto offline optei por não fazer.
+
+5. Poderia colocar no update Balance para ele escutar os eventos do dynamo quando fosse criado uma transaction para performar a partir do dado, se fosse retirada ou deposito, porem para debug offline acabaria nao sendo ok.
+
+6. Se eu estivesse usando recursos da aws, não apenas offline, criaria as de auth nos seus respectivos yml e referenciaria via arm possivelmente pego em um SSM.
+
+7. vendo a questao de deletar um portador, pensei em fazer um soft delete para que respeitando LGPD ainda sim não perdessemos os dados, mas dado o enunciado "Deletar" vou fazer um delete completo
+
+8. Feito alguns testes unitarios para garantir um coverage e uma funcionalidade ocorrendo como o enunciado (acredito que posso demorar um pouco mais por isso)

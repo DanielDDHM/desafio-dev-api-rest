@@ -1,0 +1,103 @@
+service: account-api
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: sa-east-1
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    useChildProcesses: true
+
+functions:
+#   authApiKey:
+#     handler: src/handlers/auth.handler
+
+  createHolder:
+    handler: src/handlers/createHolder.handler
+    events:
+      - http:
+          path: v1/holder
+          method: post
+
+  deleteHolder:
+    handler: src/handlers/deleteHolder.handler
+    events:
+      - http:
+          path: v1/holder/{cpf}
+          method: delete
+
+  createAccount:
+    handler: src/handlers/createAccount.handler
+    events:
+      - http:
+          path: v1/accounts
+          method: post
+          # authorizer:
+          #   name: authApiKey
+          #   type: REQUEST
+          #   identitySource: method.request.header.x-api-key
+
+  getAccount:
+    handler: src/handlers/getAccount.handler
+    events:
+      - http:
+          path: v1/accounts/{cpf}
+          method: get
+          request:
+            parameters:
+              querystrings:
+                accountNumber: true
+              headers:
+                x-api-key: true
+          # authorizer:
+          #   name: authApiKey
+          #   type: REQUEST
+          #   identitySource: method.request.header.x-api-key
+
+  blockAccount:
+    handler: src/handlers/blockAccount.handler
+    events:
+      - http:
+          path: v1/accounts/{accountNumber}/block
+          method: patch
+          # authorizer:
+          #   name: authApiKey
+          #   type: REQUEST
+          #   identitySource: method.request.header.x-api-key
+
+  unblockAccount:
+    handler: src/handlers/unblockAccount.handler
+    events:
+      - http:
+          path: v1/accounts/{accountNumber}/unblock
+          method: patch
+          # authorizer:
+          #   name: authApiKey
+          #   type: REQUEST
+          #   identitySource: method.request.header.x-api-key
+
+  closeAccount:
+    handler: src/handlers/closeAccount.handler
+    events:
+      - http:
+          path: v1/accounts/{accountNumber}
+          method: delete
+          # authorizer:
+          #   name: authApiKey
+          #   type: REQUEST
+          #   identitySource: method.request.header.x-api-key
+
+  updateBalance:
+    handler: src/handlers/updateBalance.handler
+    events:
+      - http:
+          path: v1/accounts/{accountNumber}/balance
+          method: patch
+          # authorizer:
+          #   name: authApiKey
+          #   type: REQUEST
+          #   identitySource: method.request.header.x-api-key
