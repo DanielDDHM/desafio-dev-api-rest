@@ -3,7 +3,7 @@ import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { PresenterFactory } from '../utils/presenterFactory.js';
 import { ZodError } from 'zod';
 import { getStatementValidation } from '../validations/transactions.validations.js';
-import { HttpStatusCode } from 'axios';
+import { AxiosError, HttpStatusCode } from 'axios';
 import { AppError } from '../utils/exception.js';
 
 const dynamoClient = new DynamoDBClient({
@@ -35,15 +35,15 @@ export async function handler(event) {
 
     return new PresenterFactory(HttpStatusCode.Ok, Items, 'Transactions Found');
   } catch (error) {
-    if(error instanceof AxiosError){
-      throw new AppError(error.status, error.response.data)
+    if (error instanceof AxiosError) {
+      throw new AppError(error.status, error.response.data);
     }
     if (error instanceof ZodError) {
-      console.log(error);
       throw new AppError(HttpStatusCode.BadGateway, {
         message: `Error on field: ${error.errors[0].path}, problem: ${error.errors[0].message}`,
       });
     }
+
     throw error;
   }
 }

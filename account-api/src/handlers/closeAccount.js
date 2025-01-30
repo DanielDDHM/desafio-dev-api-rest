@@ -36,7 +36,6 @@ export async function handler(event) {
     return new PresenterFactory(StatusCode.OK, null, 'Account Closed');
   } catch (error) {
     if (error instanceof ZodError) {
-      console.log(error);
       throw new AppError(StatusCode.BAD_REQUEST, {
         message: `Error on field: ${error.errors[0].path}, problem: ${error.errors[0].message}`,
       });

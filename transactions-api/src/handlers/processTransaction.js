@@ -35,7 +35,6 @@ export async function handler(event) {
         status: 'complete',
       };
     } catch (error) {
-      console.error(error);
       transaction = {
         ...transaction,
         status: 'failed',

@@ -7,7 +7,6 @@ const prisma = new PrismaClient();
 
 export async function handler(event) {
   try {
-    console.log(event);
     const apiKey = event.headers['x-api-key'];
     const requiredScopes = event.requestContext?.authorizer?.metadata?.requiredScopes || [];
 

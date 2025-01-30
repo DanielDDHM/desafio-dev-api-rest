@@ -28,8 +28,8 @@ export async function handler(event) {
           where: {
             holderId: holderExists.id,
           },
-        })
-      ])
+        }),
+      ]);
       return new PresenterFactory(StatusCode.NO_CONTENT, null, null);
     } else {
       throw new AppError(StatusCode.BAD_REQUEST, {
@@ -38,7 +38,6 @@ export async function handler(event) {
     }
   } catch (error) {
     if (error instanceof ZodError) {
-      console.log(error);
       throw new AppError(StatusCode.BAD_REQUEST, {
         message: `Error on field: ${error.errors[0].path}, problem: ${error.errors[0].message}`,
       });

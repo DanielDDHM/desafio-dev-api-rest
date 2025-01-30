@@ -36,7 +36,6 @@ export async function handler(event) {
     return new PresenterFactory(StatusCode.OK, null, 'Account Blocked');
   } catch (error) {
     if (error instanceof ZodError) {
-      console.log(error);
       throw new AppError(StatusCode.BAD_REQUEST, {
         message: `Error on validation: ${error.issues}`,
       });

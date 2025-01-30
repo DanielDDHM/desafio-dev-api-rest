@@ -24,16 +24,23 @@ export async function handler(event) {
   try {
     const body = await withdrawValidation.parseAsync(JSON.parse(event.body));
 
-    if(body.amount > 2000){
-      throw new AppError(HttpStatusCode.BadRequest, { message: "value is greater than limit"})
+    if (body.amount > 2000) {
+      throw new AppError(HttpStatusCode.BadRequest, { message: 'value is greater than limit' });
     }
 
     const response = await axios.get(`http://localhost:4001/local/v1/accounts/${body.cpf}`, {
       timeout: 15000,
     });
 
-    if(!response.data?.account || !response.data?.account?.isActive || response.data?.account.isBlocked || !response.data?.account.number){
-      throw new AppError(HttpStatusCode.BadRequest, { message: "User account is blocked or inactive"})
+    if (
+      !response.data?.account ||
+      !response.data?.account?.isActive ||
+      response.data?.account.isBlocked ||
+      !response.data?.account.number
+    ) {
+      throw new AppError(HttpStatusCode.BadRequest, {
+        message: 'User account is blocked or inactive',
+      });
     }
 
     const transaction = {
@@ -62,8 +69,8 @@ export async function handler(event) {
 
     return new PresenterFactory(HttpStatusCode.NoContent, null, null);
   } catch (error) {
-    if(error instanceof AxiosError){
-      throw new AppError(error.status, error.response.data)
+    if (error instanceof AxiosError) {
+      throw new AppError(error.status, error.response?.data);
     }
     if (error instanceof ZodError) {
       throw new AppError(HttpStatusCode.BadGateway, {

@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "sls offline start --stage local --noAuth --httpPort 4001 --lambdaPort 4003",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules NODE_ENV=test jest"
   },
   "keywords": [],
   "type": "module",
@@ -21,7 +21,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "jest-mock-extended": "^4.0.0-beta1"
+    "@jest/globals": "^29.7.0",
+    "jest": "^29.7.0"
   }
 }

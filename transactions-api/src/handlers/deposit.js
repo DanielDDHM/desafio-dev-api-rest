@@ -28,10 +28,16 @@ export async function handler(event) {
       timeout: 15000,
     });
 
-    if(!response.data?.account || !response.data?.account?.isActive || response.data?.account.isBlocked || !response.data?.account.number){
-      throw new AppError(HttpStatusCode.BadRequest, { message: "User account is blocked or inactive"})
+    if (
+      !response.data?.account ||
+      !response.data?.account?.isActive ||
+      response.data?.account?.isBlocked ||
+      !response.data?.account?.number
+    ) {
+      throw new AppError(HttpStatusCode.BadRequest, {
+        message: 'User account is blocked or inactive',
+      });
     }
-
 
     const transaction = {
       transactionId: uuidv4(),
@@ -59,11 +65,10 @@ export async function handler(event) {
 
     return new PresenterFactory(HttpStatusCode.NoContent, null, null);
   } catch (error) {
-    if(error instanceof AxiosError){
-      throw new AppError(error.status, error.response.data)
+    if (error instanceof AxiosError) {
+      throw new AppError(error.status, error.response?.data);
     }
     if (error instanceof ZodError) {
-      console.log(error);
       throw new AppError(HttpStatusCode.BadGateway, {
         message: `Error on field: ${error.errors[0].path}, problem: ${error.errors[0].message}`,
       });
